@@ -129,8 +129,8 @@ MAILERS = {
     },
 }
 
-RESR_FRAMEWORK = {
+REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'market_app.api.permissions.IsStaffOrReadOnly',
     ]
 }
