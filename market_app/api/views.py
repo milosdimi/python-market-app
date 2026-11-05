@@ -1,14 +1,18 @@
+# Django REST Framework
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
+# Eigene Dateien
 from market_app.models import Manufacturer, Product, ManufacturerUser
 from .serializers import ManufacturerSerializer, ProductSerializer, ManufacturerUserSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from .permissions import IsStaffOrReadOnly, IsAdminForDeleteOrPatchAndReadOnly, IsOwnerOrAdmin
+from .permissions import IsAdminForDeleteOrPatchAndReadOnly, IsOwnerOrAdmin
 
 
 class ManufacturerList(generics.ListCreateAPIView):
     queryset = Manufacturer.objects.all()
     serializer_class = ManufacturerSerializer
-    permission_classes = [IsStaffOrReadOnly]
+    permission_classes = [IsAuthenticated]  # nur eingeloggte User dürfen lesen und anlegen
+
 
 class ManufacturerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Manufacturer.objects.all()
@@ -19,6 +23,7 @@ class ManufacturerDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
