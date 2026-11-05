@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'market_app',
     'user_auth_app',
 ]
@@ -132,5 +133,8 @@ MAILERS = {
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'market_app.api.permissions.IsStaffOrReadOnly',
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
