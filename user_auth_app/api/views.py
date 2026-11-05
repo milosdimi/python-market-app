@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 from user_auth_app.models import UserProfile
 from .serializers import RegisterSerializer, UserProfileSerializer
+from rest_framework.response import Response
 
 
 class UserProfileList(generics.ListCreateAPIView):
@@ -16,7 +18,21 @@ class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserProfileSerializer
 
 
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]  # Registrieren muss ohne Login gehen
+class RegistrationView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+
+        data = {}
+        if serializer.is_valid():
+            saved_user = serializer.save()
+            token, created = Token.objects.get_or_create(user=saved_user)
+            data = {
+                'token': token.key,
+                'username': saved_user.username,
+                'email': saved_user.email,
+            }
+        else:
+            data = serializer.errors
+        return Response(data)
